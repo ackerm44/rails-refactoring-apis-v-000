@@ -9,9 +9,16 @@ require 'webmock/rspec'
 require 'rack_session_access/capybara'
 
 RSpec.configure do |config|
+
   config.include Capybara::DSL
+    # config.before(:all, type: :request) do
+    #   WebMock.allow_net_connect!
+    # end
+
 
   config.before(:each) do
+    WebMock.allow_net_connect!
+
     stub_request(:get, "https://api.github.com/user/repos").
       with(:headers => {'Authorization'=>'token 1'}).
       to_return(:status => 200, :body => [{"name" => "Repo 1", "html_url" => "http://link1.com"}, {"name" => "Repo 2", "html_url" => "http://link2.com"}, {"name" => "Repo 3", "html_url" => "http://link3.com"}].to_json, :headers => {})
@@ -32,4 +39,4 @@ RSpec.configure do |config|
   end
 end
 
-WebMock.disable_net_connect!(allow_localhost: true)
+#WebMock.disable_net_connect!(allow_localhost: true)
